@@ -3,31 +3,54 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { TextField, Button } from '@material-ui/core';
-import { users } from './users';
 import { useHistory } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 
-type User = {
+// move this to a types file eventually
+type user = {
+	name: string;
 	username: string;
 	password: string;
+	loggedIn: boolean;
 };
+
+// move this to a graphql query file or something
+const getUsers = gql`
+	{
+		users {
+			name
+			username
+			password
+			loggedIn
+		}
+	}
+`;
 
 export default function Login() {
 	const classes = useStyles();
 	const history = useHistory();
 	var timeout: number = 0;
+	console.log('geting data...');
+	const { loading, error, data } = useQuery(getUsers);
+	console.log('data!: ' + data);
+
 	const [possibleUser, setPossibleUser] = React.useState({
 		username: '',
 		password: '',
 		name: '',
 		loggedIn: false,
 	});
+
 	function handleSubmit(event: any) {
 		event.preventDefault();
-		const userMatch = users.find(
-			user => user.username === possibleUser.username
+
+		const userMatch = data.users.find(
+			(user: user) => user.username === possibleUser.username
 		);
+
 		if (userMatch && userMatch.password === possibleUser.password) {
-			history.push('/');
+			history.push('/' + userMatch.name);
 		}
 	}
 
@@ -43,7 +66,7 @@ export default function Login() {
 				name: possibleUser.name,
 				loggedIn: possibleUser.loggedIn,
 			});
-		}, 250);
+		}, 500);
 	}
 
 	function passChange(e: any) {
@@ -59,7 +82,7 @@ export default function Login() {
 				name: possibleUser.name,
 				loggedIn: possibleUser.loggedIn,
 			});
-		}, 250);
+		}, 500);
 	}
 
 	return (

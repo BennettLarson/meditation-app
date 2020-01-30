@@ -1,3 +1,31 @@
+# MongoDB
+
+---
+
+Database:
+Start: brew services start mongodb-community@4.2
+Stop: brew services stop mongodb-community@4.2
+
+Terminal:
+Start: mongodb
+Stop: quit()
+
+---
+
+## Frontend
+
+Start: npm start
+Stop: Ctrl + C
+
+---
+
+## Backend
+
+Start: nodemon server.js
+Stop: Ctrl + c
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
